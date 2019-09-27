@@ -23,11 +23,13 @@ public class Main extends JFrame implements KeyListener {
 	}
 	
 	Main() {
+		initImages(createImage());
+		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(800, 800);
 		setLocationRelativeTo(null);
 		setTitle("Jigsaw Puzzle");
-		setBackground(new Color(0x5f5f5f));
+		setBackground(Color.red);
 		
 		add(canvas);
 		
@@ -42,16 +44,39 @@ public class Main extends JFrame implements KeyListener {
 		Graphics g = bs.getDrawGraphics();
 		g.setColor(getBackground());
 		g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		for (int x = 0; x < tiles.length; x++) {
-			for (int y = 0; y < tiles[0].length; y++) {
-				if (tiles[x][y] != null) {
-					BufferedImage tile = tiles[x][y];
-					g.drawImage(tile, x * tileWidth, y * tileWidth, null);
-				}
-			}
-		}
+//		for (int x = 0; x < tiles.length; x++) {
+//			for (int y = 0; y < tiles[0].length; y++) {
+//				if (tiles[x][y] != null) {
+//					BufferedImage tile = tiles[x][y];
+//					g.drawImage(tile, x * tileWidth, y * tileWidth, null);
+//				}
+//			}
+//		}
+		g.drawImage(createImage(), 0, 0, null);
 		g.dispose();
 		bs.show();
+	}
+	
+	void initImages(BufferedImage wholeImage) {
+		for (int x = 0; x < tiles.length; x++) {
+			for (int y = 0; y < tiles[0].length; y++) {
+				BufferedImage tile = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
+				int[] colors = new int[200 * 200];
+				wholeImage.getRGB(x * 200, y * 200, 200, 200, colors, 0, 200);
+				tile.setRGB(0, 0, 200, 200, colors, 0, 200);
+				tiles[x][y] = tile;
+			}
+		}
+		for (int x = 0; x < tiles.length; x++)
+			for (int y = 0; y < tiles[0].length; y++)
+				System.out.println(tiles[x][y]);
+	}
+	
+	BufferedImage createImage() {
+		BufferedImage image = new BufferedImage(800, 800, BufferedImage.TYPE_INT_RGB);
+		for (int i = 0; i < 800 * 800; i++)
+			image.setRGB(i % 800, i / 800, (int) (0xFFFFFF * (i / 160000d)));
+		return image;
 	}
 
 	@Override
